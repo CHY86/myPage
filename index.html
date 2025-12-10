@@ -1,254 +1,193 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>木魚敲擊 — 靜態頁面 (GitHub Pages)</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merry Christmas!</title>
   <style>
-    :root{--bg:#0f1724;--card:#0b1220;--accent:#f6e7c3;--muted:#98a0b3}
-    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans CJK TC", "PingFang TC", "Microsoft JhengHei", sans-serif;background:linear-gradient(180deg,#071223 0%, #0b1724 100%);color:var(--accent)}
-    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:40px;box-sizing:border-box}
-    .card{width:900px;max-width:96vw;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:28px;box-shadow:0 8px 30px rgba(2,6,23,0.6);position:relative}
-    h1{margin:0 0 8px 0;font-size:20px}
-    p.lead{margin:0 0 16px 0;color:var(--muted)}
-
-    /* area */
-    .stage{height:420px;border-radius:10px;background:linear-gradient(180deg,#07202b 0%, #07111a 100%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-
-    /* 木魚 */
-    .mokugyo{width:300px;height:220px;border-radius:22px;background:linear-gradient(180deg,#7b5130,#5a361f);display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:inset 0 -10px 30px rgba(0,0,0,0.4), 0 12px 30px rgba(0,0,0,0.6);cursor:none;transform-origin:center;transition:transform 120ms ease}
-    .mokugyo .face{width:230px;height:140px;border-radius:16px;background:linear-gradient(180deg,#b07a47,#8b5a33);display:flex;align-items:center;justify-content:center;flex-direction:column;box-shadow:inset 0 -6px 18px rgba(0,0,0,0.25)}
-    .mokugyo .rings{width:80%;height:8px;border-radius:8px;background:repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0 6px, rgba(255,255,255,0.02) 6px 12px);margin-bottom:12px}
-    .mokugyo .eyes{display:flex;gap:14px}
-    .mokugyo .eye{width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,0.7)}
-
-    /* mallet cursor (we hide real cursor and show this) */
-    .mallet{position:fixed;pointer-events:none;left:0;top:0;transform-origin:14px 14px;transition:transform 80ms linear;will-change:transform}
-
-    /* controls */
-    .controls{display:flex;gap:12px;align-items:center;margin-top:18px}
-    .btn{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:8px;color:var(--accent);cursor:pointer}
-    .counter{margin-left:auto;color:var(--muted);font-weight:600}
-
-    /* subtle ripple */
-    .ripple{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.06);opacity:0;pointer-events:none}
-
-    /* instructions */
-    .meta{display:flex;gap:14px;margin-top:12px;color:var(--muted);font-size:14px}
-
-    footer{margin-top:18px;color:var(--muted);font-size:13px}
-
-    /* small responsive */
-    @media (max-width:640px){.mokugyo{width:240px;height:180px}.stage{height:320px}}
+    @font-face {
+      font-family: 'jf-openhuninn';
+      src: url('fonts/jf-openhuninn-2.1.ttf') format('truetype'); 
+    }  
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'jf-openhuninn', "Noto Sans TC", sans-serif;
+      background: linear-gradient(135deg, #c71d1d, #0b3d2e);
+      color: #fff;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      transition: background 10s linear;
+    }
+    @keyframes bgShift {
+      0% { background: linear-gradient(135deg, #c71d1d, #0b3d2e); }
+      50% { background: linear-gradient(135deg, #8b1a1a, #1a4b3d); }
+      100% { background: linear-gradient(135deg, #c71d1d, #0b3d2e); }
+    }
+    body.animate-bg {
+      animation: bgShift 20s infinite;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px 30px;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      display: none;
+      opacity: 0;
+      transform: scale(0.5) rotateX(90deg);
+      transition: all 1s ease;
+    }
+    .card.show {
+      display: block;
+      opacity: 1;
+      transform: scale(1) rotateX(0deg);
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+    p {
+      line-height: 1.8;
+      margin: 14px 0;
+      font-size: 1.1rem;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+    #game-container {
+      text-align: center;
+    }
+    input {
+      padding: 8px;
+      font-size: 1rem;
+      width: 100px;
+      text-align: center;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 20px;
+      cursor: pointer;
+      border-radius: 8px;
+      border: none;
+      background-color: #fff;
+      color: #c71d1d;
+      font-weight: bold;
+    }
+    #message {
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+    .snowflake {
+      position: absolute;
+      top: -10px;
+      color: white;
+      font-size: 1em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    @media (max-width: 480px) {
+      .card { padding: 30px 20px; max-width: 90%; }
+      h1 { font-size: 1.8rem; }
+      p { font-size: 1rem; }
+      input { width: 80px; }
+    }
   </style>
 </head>
-<body>
-  <div class="wrap">
-    <div class="card" role="application">
-      <h1>木魚敲擊練習（靜態單檔，適合放在 GitHub Pages）</h1>
-      <p class="lead">把滑鼠移向木魚（上面那個）時才視為敲擊。頁面使用 WebAudio 合成敲擊音，不需外掛音檔。</p>
-
-      <div class="stage" id="stage" aria-label="木魚敲擊舞台">
-        <div class="mokugyo" id="mokugyo" role="button" tabindex="0" aria-pressed="false" aria-label="木魚">
-          <div class="face">
-            <div class="rings" aria-hidden="true"></div>
-            <div class="eyes">
-              <div class="eye"></div>
-              <div class="eye"></div>
-            </div>
-          </div>
-        </div>
-        <div class="ripple" id="ripple"></div>
-      </div>
-
-      <div class="controls">
-        <button class="btn" id="reset">重置計數</button>
-        <button class="btn" id="toggleSound">關閉音效</button>
-        <div class="counter">敲擊次數：<span id="count">0</span></div>
-      </div>
-
-      <div class="meta">
-        <div>說明：滑鼠游標會以木魚棒圖示呈現；只有當游標由外移入木魚區域時會觸發一次敲擊（避免只在木魚上移動連續觸發）。</div>
-      </div>
-
-      <footer>把此檔名為 <code>index.html</code> 放到你的 GitHub repo（main 或 gh-pages）並啟用 Pages 即可。</footer>
-
-    </div>
+<body class="animate-bg">
+  <div id="game-container">
+    <h1>🎁 聖誕卡片解鎖 🎁</h1>
+    <p>請輸入 4 個數字解鎖卡片，系統會告訴你幾A幾B，猜對才可看到卡片！</p>
+    <input type="text" id="guess" maxlength="4" placeholder="1234">
+    <button onclick="checkGuess()">確認</button>
+    <p id="message"></p>
   </div>
 
-  <!-- mallet element (cursor) - constructed with inline SVG so no external assets needed -->
-  <div class="mallet" id="mallet" aria-hidden="true">
-    <!-- small SVG mallet rotated so tip points down-right by default -->
-    <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
-      <g transform="translate(0,0)">
-        <!-- handle -->
-        <rect x="26" y="6" width="6" height="36" rx="3" fill="#3b2a1f" />
-        <rect x="25" y="6" width="8" height="8" rx="2" fill="#6d4a32" />
-        <!-- head -->
-        <rect x="8" y="32" width="44" height="18" rx="6" fill="#7b4f32" stroke="#3b2617" stroke-width="1" />
-        <!-- highlights -->
-        <rect x="12" y="36" width="36" height="4" rx="2" fill="rgba(255,255,255,0.06)" />
-      </g>
-    </svg>
+  <div class="card" id="card">
+    <h1>🎄 To Susan 🎄</h1>
+    <p>
+      恭喜你又成功地走過了一年<br>
+      從投履歷、上機，到被防毒公司擊落<br>
+      群裡的各位都和你一起經歷了一場冒險<br>
+      雖然這次的結果不如預期<br>
+      但一次的挫折不是終點<br>
+      你的努力與累積也不會被抹掉掉<br>
+
+      祝你在新的一年能健康、平安、順心<br>
+      並找到屬於你的方向與熱情<br>
+    </p>
+    <div class="footer">— Allen</div>
   </div>
 
   <script>
-    // --- DOM ---
-    const stage = document.getElementById('stage');
-    const mokugyo = document.getElementById('mokugyo');
-    const mallet = document.getElementById('mallet');
-    const ripple = document.getElementById('ripple');
-    const countEl = document.getElementById('count');
-    const resetBtn = document.getElementById('reset');
-    const toggleSoundBtn = document.getElementById('toggleSound');
-
-    // --- state ---
-    let count = 0;
-    let soundEnabled = true;
-    let prevInside = false; // track whether previous mouse position was inside the mokugyo
-
-    // --- WebAudio percussive "wood" sound ---
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = AudioContext ? new AudioContext() : null;
-
-    function playWoodHit(){
-      if(!audioCtx || !soundEnabled) return;
-      // create short percussive sound using noise + filtered tone + envelope
-      const now = audioCtx.currentTime;
-
-      // short noise burst for 'thud'
-      const bufferSize = audioCtx.sampleRate * 0.03; // 30ms
-      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = noiseBuffer.getChannelData(0);
-      for(let i=0;i<bufferSize;i++) data[i] = (Math.random()*2-1) * Math.exp(-i / (bufferSize*0.8));
-      const noise = audioCtx.createBufferSource();
-      noise.buffer = noiseBuffer;
-      const noiseFilter = audioCtx.createBiquadFilter();
-      noiseFilter.type = 'bandpass';
-      noiseFilter.frequency.value = 800;
-      noiseFilter.Q.value = 0.8;
-      const noiseGain = audioCtx.createGain();
-      noiseGain.gain.setValueAtTime(0.0001, now);
-      noiseGain.gain.exponentialRampToValueAtTime(0.6, now + 0.005);
-      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-
-      noise.connect(noiseFilter).connect(noiseGain).connect(audioCtx.destination);
-      noise.start(now);
-      noise.stop(now + 0.06);
-
-      // short sine for pitch
-      const osc = audioCtx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(220, now);
-      osc.frequency.exponentialRampToValueAtTime(120, now + 0.18);
-      const oscGain = audioCtx.createGain();
-      oscGain.gain.setValueAtTime(0.0001, now);
-      oscGain.gain.exponentialRampToValueAtTime(0.5, now + 0.008);
-      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-      osc.connect(oscGain).connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + 0.22);
+    // 生成隨機 4 位數字不重複
+    function generateSecret() {
+      const digits = [0,1,2,3,4,5,6,7,8,9];
+      let secret = '';
+      for(let i=0; i<4; i++) {
+        const idx = Math.floor(Math.random() * digits.length);
+        secret += digits[idx];
+        digits.splice(idx,1);
+      }
+      return secret;
     }
 
-    // --- visual strike ---
-    function doStrike(x,y){
-      // animate mokugyo (small scale) and ripple
-      mokugyo.style.transform = 'scale(0.98) translateY(2px)';
-      setTimeout(()=> mokugyo.style.transform = '' , 120);
+    const secret = generateSecret();
+    function checkGuess() {
+      const guess = document.getElementById('guess').value;
+      const message = document.getElementById('message');
+      if(guess.length !== 4 || !/^[0-9]{4}$/.test(guess)) {
+        message.textContent = '請輸入 4 個數字！';
+        return;
+      }
 
-      ripple.style.left = x + 'px';
-      ripple.style.top = y + 'px';
-      ripple.style.width = '10px';
-      ripple.style.height = '10px';
-      ripple.style.opacity = '0.7';
-      ripple.style.transition = 'none';
-      requestAnimationFrame(()=>{
-        ripple.style.transition = 'width 420ms ease, height 420ms ease, opacity 420ms ease, transform 420ms ease';
-        ripple.style.width = '220px';
-        ripple.style.height = '220px';
-        ripple.style.opacity = '0';
-        ripple.style.transform = 'translate(-50%,-50%)';
-      });
+      let a = 0, b = 0;
+      for(let i=0; i<4; i++) {
+        if(guess[i] === secret[i]) a++;
+        else if(secret.includes(guess[i])) b++;
+      }
 
-      // count
-      count++;
-      countEl.textContent = count;
-
-      // audio
-      // resume context on first interaction (for browsers requiring user gesture)
-      if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
-      playWoodHit();
+      if(a === 4) {
+        document.getElementById('game-container').style.display = 'none';
+        const card = document.getElementById('card');
+        card.classList.add('show');
+      } else {
+        message.textContent = `${a}A${b}B，再試一次！`;
+      }
     }
 
-    // --- mouse handling ---
-    // hide native cursor inside stage and follow it with mallet
-    stage.addEventListener('mouseenter', ()=> document.body.style.cursor = 'none');
-    stage.addEventListener('mouseleave', ()=> document.body.style.cursor = 'auto');
-
-    // track mousemove to position mallet and detect entry into mokugyo
-    stage.addEventListener('mousemove', (e)=>{
-      const rect = stage.getBoundingClientRect();
-      const x = e.clientX; const y = e.clientY;
-
-      // position mallet with small offset so head points toward mokugyo
-      mallet.style.left = (x - 14) + 'px';
-      mallet.style.top = (y - 14) + 'px';
-
-      // rotate mallet slightly based on vertical speed
-      const rot = Math.max(-40, Math.min(40, (e.movementY || 0) * 2));
-      mallet.style.transform = `rotate(${rot}deg)`;
-
-      // boundary check: is current point inside mokugyo?
-      const inside = mokugyo.contains(document.elementFromPoint(x, y));
-
-      // Only count a strike when previous position was outside AND current inside (mouse moved into the mokugyo)
-      if(!prevInside && inside){
-        // compute local coordinates for visuals
-        const mokRect = mokugyo.getBoundingClientRect();
-        const localX = x - mokRect.left;
-        const localY = y - mokRect.top;
-        doStrike(localX + mokRect.left - stage.getBoundingClientRect().left, localY + mokRect.top - stage.getBoundingClientRect().top);
-      }
-
-      prevInside = !!inside;
-    });
-
-    // also detect when mouse leaves stage to reset prevInside
-    stage.addEventListener('mouseleave', ()=> prevInside = false);
-
-    // keyboard accessibility: hitting Enter or Space while mokugyo focused also triggers strike
-    mokugyo.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' || e.code === 'Space'){
-        const rect = mokugyo.getBoundingClientRect();
-        doStrike(rect.width/2, rect.height/2);
-      }
-    });
-
-    // reset button
-    resetBtn.addEventListener('click', ()=>{count = 0; countEl.textContent = count});
-
-    // toggle sound
-    toggleSoundBtn.addEventListener('click', ()=>{
-      soundEnabled = !soundEnabled;
-      toggleSoundBtn.textContent = soundEnabled ? '關閉音效' : '開啟音效';
-    });
-
-    // mobile/touch fallback: follow touches and treat touchstart inside mokugyo as strike
-    stage.addEventListener('touchstart', (ev)=>{
-      const t = ev.touches[0];
-      const inside = mokugyo.contains(document.elementFromPoint(t.clientX, t.clientY));
-      if(inside){
-        const mokRect = mokugyo.getBoundingClientRect();
-        doStrike(mokRect.width/2, mokRect.height/2);
-      }
-    }, {passive:true});
-
-    // hint: if user hasn't interacted to enable audio, resume upon first click
-    document.addEventListener('click', ()=>{ if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, {once:true});
-
-    // keep mallet visible on initial load center
-    mallet.style.left = '-200px';
-    mallet.style.top = '-200px';
+    // 雪花效果
+    const snowflakeChars = ['❄','❅','❆'];
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.style.left = Math.random() * window.innerWidth + 'px';
+      snowflake.style.fontSize = (Math.random() * 24 + 12) + 'px';
+      snowflake.textContent = snowflakeChars[Math.floor(Math.random() * snowflakeChars.length)];
+      document.body.appendChild(snowflake);
+      let fallDuration = Math.random() * 5 + 5;
+      snowflake.style.transition = `top ${fallDuration}s linear`;
+      setTimeout(() => {
+        snowflake.style.top = window.innerHeight + 'px';
+      }, 50);
+      setTimeout(() => {
+        snowflake.remove();
+      }, fallDuration * 1000);
+    }
+    setInterval(createSnowflake, 200);
+    console.log("answer:" + secret);
   </script>
 </body>
 </html>
