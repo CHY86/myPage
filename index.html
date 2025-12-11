@@ -14,7 +14,6 @@
       margin: 0;
       padding: 0;
       font-family: 'jf-openhuninn', "Noto Sans TC", sans-serif;
-      /* 背景設定 */
       background: linear-gradient(135deg, #1e252d, #000000);
       background-repeat: no-repeat;
       background-attachment: fixed;
@@ -29,7 +28,6 @@
       position: relative;
     }
 
-    /* 溫暖背景轉場層 */
     body::before {
       content: '';
       position: absolute;
@@ -44,7 +42,6 @@
     }
     body.warm-bg::before { opacity: 1; }
 
-    /* 舞台容器 */
     #stage-container {
         position: relative;
         width: 100%;
@@ -53,7 +50,6 @@
         align-items: center;
         height: 100vh;
         z-index: 10;
-        /* 3D 空間深淺，影響翻轉的立體感 */
         perspective: 1500px; 
     }
 
@@ -62,7 +58,7 @@
       position: absolute;
       cursor: default; 
       transform: scale(1.2); 
-      transition: all 0.8s ease-in-out;
+      transition: all 0.3s ease-in-out;
       z-index: 20;
       display: flex;
       flex-direction: column;
@@ -71,18 +67,19 @@
       -webkit-tap-highlight-color: transparent;
     }
     .bonfire-wrapper.interactive { cursor: pointer; opacity: 1; }
-    .bonfire-wrapper.interactive:hover { transform: scale(1.3); text-shadow: 0 0 10px white; }
+    .bonfire-wrapper.interactive:hover { transform: scale(1.25); text-shadow: 0 0 10px white; }
+    .bonfire-wrapper.interactive:active { transform: scale(1.1); }
     
-    /* 點燃搖晃動畫 */
     .bonfire-wrapper.lit { animation: burningShake 0.2s infinite alternate; cursor: default; }
     @keyframes burningShake { from { transform: scale(1.2) rotate(-1deg); } to { transform: scale(1.2) rotate(1deg); } }
     
-    /* 燒盡消失 */
     .bonfire-wrapper.burned-out { opacity: 0; transform: scale(0.1) translateY(-50px); pointer-events: none; }
 
-    /* 火焰 */
-    .fire { position: relative; width: 180px; height: 180px; opacity: 0; transition: opacity 1s ease-in; }
+    /* 火焰：transition 0.5s 配合慢節奏 */
+    .fire { position: relative; width: 180px; height: 180px; opacity: 0; transition: opacity 0.5s ease-in; }
     .bonfire-wrapper.lit .fire { opacity: 1; }
+    .bonfire-wrapper.weak-lit .fire { opacity: 0.6; }
+
     .fire-flame {
       position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       width: 60%; height: 60%; background-color: #ffcc00;
@@ -95,26 +92,33 @@
     
     .wood-log { font-size: 100px; margin-top: -40px; position: relative; z-index: 1; }
     
+    /* 提示文字樣式 */
     .click-hint {
         margin-top: 20px; font-size: 1.2rem; font-weight: bold; color: #ffecb3;
-        opacity: 0; transform: translateY(10px); transition: opacity 1s, transform 1s;
+        opacity: 0; /* 預設隱藏 */
+        transform: translateY(10px); 
+        transition: opacity 0.5s, transform 0.5s;
+        min-height: 1.5em; /* 佔位防止跳動 */
     }
-    .click-hint.visible { opacity: 1; transform: translateY(0); animation: pulse 1.5s infinite; }
+    /* 只有加上 .visible 才會顯示並開始呼吸燈動畫 */
+    .click-hint.visible { 
+        opacity: 1; 
+        transform: translateY(0); 
+        animation: pulse 1.5s infinite; 
+    }
     @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
 
-    /* --- 卡片核心樣式 (包含文字溢出修復) --- */
-
-    /* 1. 卡片外層容器：負責定位和浮現 */
+    /* --- 卡片核心樣式 --- */
     .card-container {
       position: absolute;
       width: 90%;
-      max-width: 480px; /* 電腦版最大寬度 */
-      display: none; /* 初始隱藏 */
+      max-width: 480px; 
+      display: none; 
       opacity: 0;
       transform: scale(0.6) translateY(40px);
       transition: all 1.5s cubic-bezier(0.25, 0.8, 0.25, 1); 
       z-index: 30;
-      transform-style: preserve-3d; /* 關鍵：保留 3D 空間 */
+      transform-style: preserve-3d; 
     }
     .card-container.show {
       display: block;
@@ -122,34 +126,28 @@
       transform: scale(1) translateY(0);
     }
 
-    /* 2. 翻轉層：負責旋轉動畫 */
     .card-inner {
       position: relative;
       width: 100%;
-      /* 不需要設定高度，讓它被 card-front 撐開 */
       transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
       transform-style: preserve-3d;
       cursor: pointer;
-      -webkit-tap-highlight-color: transparent; /* 移除手機點擊藍框 */
+      -webkit-tap-highlight-color: transparent; 
     }
-    /* 加上這個 class 就會翻面 */
     .card-inner.flipped {
       transform: rotateY(180deg);
     }
 
-    /* 3. 卡片正反面共用設定 */
     .card-face {
       width: 100%;
-      /* 讓背面看不見 */
       -webkit-backface-visibility: hidden; 
       backface-visibility: hidden;
       
-      /* 毛玻璃設定 */
-      background: rgba(255, 255, 255, 0.2); /* 稍微調高不透明度讓字更清楚 */
+      background: rgba(255, 255, 255, 0.2); 
       border-radius: 25px;
       padding: 50px 30px;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
       box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
       border: 1px solid rgba(255,255,255,0.25);
       box-sizing: border-box;
@@ -160,45 +158,34 @@
       align-items: center;
     }
 
-    /* --- 正面：Relative 讓文字撐開高度 --- */
-    .card-front {
-      position: relative; 
-      z-index: 2;
-    }
-
-    /* --- 背面：Absolute 讓它貼合正面大小 --- */
+    .card-front { position: relative; z-index: 2; }
     .card-back {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%; /* 強制跟隨正面高度 */
-      transform: rotateY(180deg); /* 預先轉過去 */
+      position: absolute; top: 0; left: 0; height: 100%; 
+      transform: rotateY(180deg); 
     }
 
-    /* 內容樣式 */
     h1 { font-size: 2.2rem; margin-bottom: 20px; color: #ffecb3; text-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-    p { line-height: 1.8; margin: 15px 0; font-size: 1.15rem; word-break: break-word; /* 防止文字過長破版 */ }
+    p { line-height: 1.8; margin: 15px 0; font-size: 1.15rem; word-break: break-word; }
     .footer { margin-top: 30px; font-size: 1rem; opacity: 0.9; width: 100%; text-align: right; font-weight: bold; color: #ffecb3; }
     .tap-hint { margin-top: 20px; font-size: 0.8rem; opacity: 0.6; animation: pulse 2s infinite; }
 
-    /* 背面樣式 */
     .photo-placeholder {
         width: 100%; height: 150px; background: rgba(0,0,0,0.2); border-radius: 10px; margin: 20px 0;
         display: flex; justify-content: center; align-items: center; border: 2px dashed rgba(255,255,255,0.3); font-size: 2rem;
     }
 
-    /* 粒子 */
     .snowflake, .wind-line { position: absolute; user-select: none; pointer-events: none; z-index: 5; }
     .snowflake { color: rgba(255,255,255,0.8); top: -50px; }
     .wind-line { background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); height: 2px; border-radius: 50%; }
 
-    /* 手機版微調 */
     @media (max-width: 480px) {
       .card-container { width: 85%; max-width: 360px; }
       .card-face { padding: 40px 20px; }
       h1 { font-size: 1.8rem; }
       p { font-size: 1rem; }
       .bonfire-wrapper { transform: scale(0.9); }
+      .bonfire-wrapper.interactive:hover { transform: scale(0.95); }
+      .bonfire-wrapper.interactive:active { transform: scale(0.85); }
       .bonfire-wrapper.lit { animation: none; }
     }
   </style>
@@ -218,7 +205,6 @@
 
       <div class="card-container" id="final-card">
           <div class="card-inner" id="card-inner">
-              
               <div class="card-face card-front">
                   <h1>🎄 To Susan 🎄</h1>
                   <p>
@@ -241,31 +227,24 @@
                   <p>
                     我的小禮物是花磚杯墊<br>
                     (據說曾是台灣首富選用的圖案)<br>
-                    隨信也附上之前去侯硐拍的貓咪
+                    隨信也附上之前去侯硐拍的貓咪照片
                   </p>
                   <p>明年也要和群組的各位一起加油！<br>Merry Christmas & Happy New Year!</p>
                   <div class="footer">— Allen</div>
               </div>
-
           </div>
       </div>
   </div>
 
   <script>
-    // --- 重要：將翻轉功能設在全域 (Global Scope) ---
-    // 這樣 HTML onclick 或者 JS 綁定都能確保抓得到
     function toggleCardFlip() {
         const container = document.getElementById('final-card');
         const inner = document.getElementById('card-inner');
-        
-        // 只有當卡片已經顯示時，才允許翻轉
-        // 使用 getComputedStyle 確保判斷準確
         if (window.getComputedStyle(container).display !== 'none' && container.classList.contains('show')) {
             inner.classList.toggle('flipped');
         }
     }
 
-    // --- DOM 載入後執行的邏輯 ---
     document.addEventListener('DOMContentLoaded', () => {
         
         const bonfire = document.getElementById('bonfire');
@@ -273,9 +252,11 @@
         const hintText = document.querySelector('.click-hint');
         const cardInner = document.getElementById('card-inner');
         
-        let isBurning = false;
-        let isClickable = false;
+        let isBurning = false;     
+        let isClickable = false;   
         let isBlizzard = true; 
+        
+        let clickCount = 0; 
         
         let snowInterval;
         let windInterval;
@@ -287,33 +268,77 @@
             isClickable = true;
             bonfire.classList.add('interactive');
             hintText.classList.add('visible');
-        }, 3000);
+        }, 5000);
 
         if (bonfire) {
-            bonfire.addEventListener('click', igniteAndReveal);
-            bonfire.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                igniteAndReveal();
-            });
+            bonfire.addEventListener('click', handleBonfireClick);
         }
 
-        // 為卡片加上點擊監聽 (最保險的做法，不依賴 HTML onclick)
         if (cardInner) {
             cardInner.addEventListener('click', toggleCardFlip);
         }
 
-        function igniteAndReveal() {
+        function handleBonfireClick(e) {
             if (!isClickable || isBurning) return;
-            
-            isBurning = true;
+
+            isBurning = true; 
+            clickCount++;
+
+            // 步驟 1: 點擊瞬間，"移除 class" 讓文字立刻消失
+            // 這會停止 pulse 動畫並觸發 CSS 的 opacity 變回 0
+            hintText.classList.remove('visible');
+
+            if (clickCount < 3) {
+                // --- 失敗的嘗試 (前兩次) ---
+                
+                // 點火
+                bonfire.classList.add('lit');
+                bonfire.classList.add('weak-lit');
+
+                // 延長燃燒時間：第1次 2000ms，第2次 2500ms
+                const burnTime = clickCount === 1 ? 2000 : 2500;
+
+                setTimeout(() => {
+                    // 1. 熄滅火焰 (CSS transition 0.5s)
+                    bonfire.classList.remove('lit');
+                    bonfire.classList.remove('weak-lit');
+
+                    // 2. 等待 500ms 讓火光完全淡出
+                    setTimeout(() => {
+                        // 3. 更新文字內容
+                        if (clickCount === 1) {
+                            hintText.textContent = "火光閃了一下... 加油再來！";
+                        } else if (clickCount === 2) {
+                            hintText.textContent = "差一點點了！再試一次！";
+                        }
+                        
+                        // 4. 加回 class，讓文字慢慢浮現並開始呼吸
+                        hintText.classList.add('visible');
+                        
+                        // 5. 解鎖
+                        isBurning = false;
+                    }, 500); 
+
+                }, burnTime);
+
+            } else {
+                // --- 成功的點火 (第三次) ---
+                igniteAndReveal();
+            }
+        }
+
+        function igniteAndReveal() {
             isBlizzard = false; 
-            bonfire.classList.remove('interactive');
+            bonfire.classList.remove('interactive'); 
 
             clearInterval(windInterval); 
             startSnow(500); 
 
             bonfire.classList.add('lit');
+            
+            // 成功時確保文字是隱藏的
             hintText.classList.remove('visible');
+            
             document.body.classList.add('warm-bg');
             
             setTimeout(() => {
