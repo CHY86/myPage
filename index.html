@@ -23,7 +23,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      
+      /* --- 修正開始 --- */
+      /* 相容舊版瀏覽器 */
+      height: 100vh; 
+      /* 針對現代 iOS Safari 的修正：扣除網址列高度 */
+      height: 100dvh; 
+      /* --- 修正結束 --- */
+      
       text-align: center;
       position: relative;
     }
@@ -48,7 +55,12 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        
+        /* --- 修正開始 --- */
         height: 100vh;
+        height: 100dvh;
+        /* --- 修正結束 --- */
+        
         z-index: 10;
         perspective: 1500px; 
     }
